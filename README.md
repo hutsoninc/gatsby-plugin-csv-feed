@@ -19,55 +19,55 @@ module.exports = {
     {
       resolve: "gatsby-plugin-csv-feed",
       options: {
-            feeds: [
-                {
-                    query: `
-                        {
-                            site {
-                                siteMetadata {
-                                    siteUrl
-                                }
-                            }
-                            allMarkdownRemark {
-                                edges {
-                                    node {
-                                        frontmatter {
-                                            id
-                                            title
-                                            description
-                                            category
-                                            keywords
-                                            price
-                                            image
-                                        }
-                                        fields {
-                                            slug
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    `,
-                    serialize: ({ query: { site, allMarkdownRemark } }) => {
-                        return allMarkdownRemark.edges.map(edge => {
-                            const node = Object.assign({}, edge.node.frontmatter, edge.node.fields);
-                            return {
-                                "ID": node.id,
-                                "Item title": node.title,
-                                "Item description": node.description,
-                                "Image URL": `${site.siteMetadata.siteUrl}${node.image}`,
-                                "Price": `${Number(node.price).toLocaleString('en-us')} USD`,
-                                "Item Category": node.category,
-                                "Contextual keywords": node.keywords.join(';'),
-                                "Final URL": `${site.siteMetadata.siteUrl}${node.slug}`,
-                                "Tracking template": `${site.siteMetadata.siteUrl}${node.slug}?utm_source=Google&utm_medium=Dynamic%20Remarketing%20Ad`,
-                            };
-                        });
-                    },
-                    output: "/product-feed.csv",
-                },
-            ],
-        },
+        feeds: [
+          {
+            query: `
+              {
+                site {
+                  siteMetadata {
+                    siteUrl
+                  }
+                }
+                allMarkdownRemark {
+                  edges {
+                    node {
+                      frontmatter {
+                        id
+                        title
+                        description
+                        category
+                        keywords
+                        price
+                        image
+                      }
+                      fields {
+                        slug
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            serialize: ({ query: { site, allMarkdownRemark } }) => {
+              return allMarkdownRemark.edges.map(edge => {
+                const node = Object.assign({}, edge.node.frontmatter, edge.node.fields);
+                return {
+                  "ID": node.id,
+                  "Item title": node.title,
+                  "Item description": node.description,
+                  "Image URL": `${site.siteMetadata.siteUrl}${node.image}`,
+                  "Price": `${Number(node.price).toLocaleString('en-us')} USD`,
+                  "Item Category": node.category,
+                  "Contextual keywords": node.keywords.join(';'),
+                  "Final URL": `${site.siteMetadata.siteUrl}${node.slug}`,
+                  "Tracking template": `${site.siteMetadata.siteUrl}${node.slug}?utm_source=Google&utm_medium=Dynamic%20Remarketing%20Ad`,
+                };
+              });
+            },
+            output: "/product-feed.csv",
+          },
+        ],
+      },
     },
   ]
 }
