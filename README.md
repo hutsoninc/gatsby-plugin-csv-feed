@@ -1,6 +1,6 @@
 # gatsby-plugin-csv-feed
 
-[![Current npm package version](https://img.shields.io/npm/v/gatsby-plugin-csv-feed.svg)](https://www.npmjs.com/package/gatsby-plugin-csv-feed) 
+[![Build Status](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed.svg?branch=master)](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed) [![Current npm package version](https://img.shields.io/npm/v/gatsby-plugin-csv-feed.svg)](https://www.npmjs.com/package/gatsby-plugin-csv-feed) 
 
 Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Google Data Feeds and feeds for other integrations that don't support RSS.
 
