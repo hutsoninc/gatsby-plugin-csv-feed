@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`gatsby-plugin-csv-feed onPostBuild creates CSV 1`] = `
+"\\"title\\",\\"description\\"
+\\"Some title\\",\\"Some description\\""
+`;
+
+exports[`gatsby-plugin-csv-feed onPostBuild creates multiple CSVs 1`] = `
+"\\"title\\",\\"description\\"
+\\"Some title\\",\\"Some description\\""
+`;
+
+exports[`gatsby-plugin-csv-feed onPostBuild creates multiple CSVs 2`] = `
+"\\"name\\",\\"sku\\",\\"price\\"
+\\"Product name\\",\\"Product sku\\",10"
+`;
