@@ -1,6 +1,6 @@
-jest.mock(`fs-extra`)
-const fs = require(`fs-extra`)
-const path = require(`path`)
+jest.mock('fs-extra');
+const fs = require('fs-extra');
+const path = require('path');
 const { onPreBootstrap } = require('../src/gatsby-node');
 const { onPostBuild } = require('../src/gatsby-node');
 
@@ -21,7 +21,7 @@ describe('gatsby-plugin-csv-feed', () => {
                 reporter,
                 options,
             };
-        }
+        };
 
         it('imports', () => {
             expect(onPreBootstrap).toBeDefined();
@@ -93,7 +93,7 @@ describe('gatsby-plugin-csv-feed', () => {
 
         beforeEach(() => {
             fs.exists = jest.fn().mockResolvedValue(true);
-            fs.writeFile = jest.fn().mockResolvedValue();
+            fs.writeFile = jest.fn().mockResolvedValue(true);
             fs.mkdirp = jest.fn().mockResolvedValue();
         });
 
@@ -103,7 +103,6 @@ describe('gatsby-plugin-csv-feed', () => {
         });
 
         it(`creates CSV`, async () => {
-            fs.writeFile = jest.fn().mockResolvedValue(true);
             const graphql = jest.fn().mockResolvedValue({
                 data: {
                     allMarkdownRemark: {
@@ -153,7 +152,6 @@ describe('gatsby-plugin-csv-feed', () => {
         });
 
         it(`creates multiple CSVs`, async () => {
-            fs.writeFile = jest.fn().mockResolvedValue(true);
             const graphql = jest.fn().mockResolvedValue({
                 data: {
                     allMarkdownRemark: {
@@ -175,10 +173,10 @@ describe('gatsby-plugin-csv-feed', () => {
                                     name: 'Product name',
                                     sku: 'Product sku',
                                     price: 10,
-                                }
-                            }
-                        ]
-                    }
+                                },
+                            },
+                        ],
+                    },
                 },
             });
 
@@ -237,6 +235,7 @@ describe('gatsby-plugin-csv-feed', () => {
 
             expect(call0[0]).toEqual(path.join(`public`, `out.csv`));
             expect(call0[1]).toMatchSnapshot();
+            
             expect(call1[0]).toEqual(path.join(`public`, `products.csv`));
             expect(call1[1]).toMatchSnapshot();
         });
