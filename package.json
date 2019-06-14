@@ -1,7 +1,7 @@
 {
   "name": "gatsby-plugin-csv-feed",
   "version": "1.0.0",
-  "description": "",
+  "description": "Gatsby plugin for creating CSV data feeds",
   "main": "index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production && babel src --out-dir .",
@@ -11,11 +11,13 @@
   "keywords": [
     "gatsby",
     "gatsby-plugin",
+    "csv",
+    "tsv",
+    "data",
+    "feed",
     "google",
     "ads",
-    "adwords",
-    "data",
-    "feed"
+    "adwords"
   ],
   "author": {
     "name": "Austin Gordon",
