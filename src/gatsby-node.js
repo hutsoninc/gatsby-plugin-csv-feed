@@ -8,6 +8,12 @@ const publicPath = `./public`;
 export const onPreBootstrap = validateOptions;
 
 export async function onPostBuild({ graphql }, options) {
+    // Run base query
+    let baseQuery;
+    if (options.query) {
+        baseQuery = await runQuery(graphql, options.query);
+    }
+
     // Run queries
     const feedPromises = Object.keys(options.feeds).map(async feed => {
         const { query, ...rest } = options.feeds[feed];
@@ -15,7 +21,7 @@ export async function onPostBuild({ graphql }, options) {
         const data = await runQuery(graphql, query);
 
         return {
-            query: data,
+            query: Object.assign({}, baseQuery, data),
             ...rest,
         };
     });

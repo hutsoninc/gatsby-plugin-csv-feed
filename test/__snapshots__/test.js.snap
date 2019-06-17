@@ -14,3 +14,8 @@ exports[`gatsby-plugin-csv-feed onPostBuild creates multiple CSVs 2`] = `
 "\\"name\\",\\"sku\\",\\"price\\"
 \\"Product name\\",\\"Product sku\\",10"
 `;
+
+exports[`gatsby-plugin-csv-feed onPostBuild does not mutate base query 1`] = `
+"\\"title\\",\\"description\\",\\"siteTitle\\"
+\\"Some title\\",\\"Some description\\",\\"Site title\\""
+`;

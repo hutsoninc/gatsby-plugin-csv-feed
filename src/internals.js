@@ -27,6 +27,7 @@ const itemSchema = Joi.object({
 
 const optionsSchema = Joi.object().keys({
     feeds: Joi.array().items(itemSchema).required(),
+    query: Joi.string(),
 });
 
 export function runQuery(handler, query) {

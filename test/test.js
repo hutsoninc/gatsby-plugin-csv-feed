@@ -35,6 +35,19 @@ describe('gatsby-plugin-csv-feed', () => {
 
             expect(options.plugins).toBeUndefined();
         });
+        
+        it('reports invalid query option', async () => {
+            const { reporter } = await setup({
+                query: 123,
+                feeds: [{
+                    output: 'out.csv',
+                    serialize: noop,
+                    query: `query`
+                }],
+            });
+
+            expect(reporter.panic).toHaveBeenCalledTimes(1);
+        });
 
         it('reports missing feeds option', async () => {
             const { reporter } = await setup();
@@ -75,8 +88,21 @@ describe('gatsby-plugin-csv-feed', () => {
             expect(reporter.panic).toHaveBeenCalledTimes(1);
         });
 
-        it('successfully validates options', async () => {
+        it('successfully validates feeds option', async () => {
             const { reporter } = await setup({
+                feeds: [{
+                    output: 'out.csv',
+                    serialize: noop,
+                    query: `query`
+                }],
+            });
+
+            expect(reporter.panic).toHaveBeenCalledTimes(0);
+        });
+
+        it('successfully validates query option', async () => {
+            const { reporter } = await setup({
+                query: `query`,
                 feeds: [{
                     output: 'out.csv',
                     serialize: noop,
@@ -235,9 +261,84 @@ describe('gatsby-plugin-csv-feed', () => {
 
             expect(call0[0]).toEqual(path.join(`public`, `out.csv`));
             expect(call0[1]).toMatchSnapshot();
-            
+
             expect(call1[0]).toEqual(path.join(`public`, `products.csv`));
             expect(call1[1]).toMatchSnapshot();
+        });
+
+        it(`does not mutate base query`, async () => {
+            const siteData = {
+                data: {
+                    site: {
+                        siteMetadata: {
+                            title: 'Site title',
+                        },
+                    },
+                },
+            };
+
+            const allMarkdownRemarkData = {
+                data: {
+                    allMarkdownRemark: {
+                        edges: [
+                            {
+                                node: {
+                                    frontmatter: {
+                                        title: 'Some title',
+                                        description: 'Some description',
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            };
+
+            const graphql = jest.fn()
+                .mockResolvedValueOnce(siteData)
+                .mockResolvedValueOnce(allMarkdownRemarkData);
+
+            await onPostBuild({ graphql }, {
+                query: `
+                    {
+                        site {
+                            siteMetadata {
+                                title
+                            }
+                        }
+                    }
+                `,
+                feeds: [{
+                    query: `
+                        {
+                            allMarkdownRemark {
+                                edges {
+                                    node {
+                                        frontmatter {
+                                            title
+                                            description
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                    serialize: ({ query: { site, allMarkdownRemark } }) => {
+                        return allMarkdownRemark.edges.map(edge => {
+                            return Object.assign({}, edge.node.frontmatter, {
+                                siteTitle: site.siteMetadata.title,
+                            });
+                        });
+                    },
+                    output: 'out.csv',
+                }],
+            });
+
+            const [filePath, contents] = fs.writeFile.mock.calls[0];
+
+            expect(filePath).toEqual(path.join(`public`, `out.csv`));
+            expect(contents).toMatch(/siteTitle/);
+            expect(contents).toMatchSnapshot();
         });
 
     });

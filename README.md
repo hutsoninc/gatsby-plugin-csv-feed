@@ -19,15 +19,21 @@ module.exports = {
     {
       resolve: "gatsby-plugin-csv-feed",
       options: {
+        // Query to pass to all feed serializers
+        query: `
+          {
+            site {
+              siteMetadata {
+                siteUrl
+              }
+            }
+          }
+        `,
+        // Feeds
         feeds: [
           {
             query: `
               {
-                site {
-                  siteMetadata {
-                    siteUrl
-                  }
-                }
                 allMarkdownRemark {
                   edges {
                     node {
@@ -60,7 +66,6 @@ module.exports = {
                   "Item Category": node.category,
                   "Contextual keywords": node.keywords.join(';'),
                   "Final URL": `${site.siteMetadata.siteUrl}${node.slug}`,
-                  "Tracking template": `${site.siteMetadata.siteUrl}${node.slug}?utm_source=Google&utm_medium=Dynamic%20Remarketing%20Ad`,
                 };
               });
             },
