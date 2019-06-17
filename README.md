@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed.svg?branch=master)](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed) [![Current npm package version](https://img.shields.io/npm/v/gatsby-plugin-csv-feed.svg)](https://www.npmjs.com/package/gatsby-plugin-csv-feed) 
 
-Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Google Data Feeds and feeds for other integrations that don't support RSS.
+Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Google Data Feeds, Page Feeds, and feeds for other integrations.
 
 ## Installing
 
@@ -10,7 +10,7 @@ Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Goog
 
 ## Usage
 
-Here's an example of how to create a [Custom Google Data Feed](https://support.google.com/google-ads/answer/6053288).
+Here's an example of how to create a [Custom Google Data Feed](https://support.google.com/google-ads/answer/6053288):
 
 ```js
 // In your gatsby-config.js
@@ -19,7 +19,7 @@ module.exports = {
     {
       resolve: "gatsby-plugin-csv-feed",
       options: {
-        // Query to pass to all feed serializers
+        // Query to pass to all feed serializers (optional)
         query: `
           {
             site {

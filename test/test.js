@@ -71,7 +71,6 @@ describe('gatsby-plugin-csv-feed', () => {
             const { reporter } = await setup({
                 feeds: [
                     {
-                        output,
                         serialize,
                     },
                     {

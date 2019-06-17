@@ -21,7 +21,7 @@ export function validateOptions({ reporter }, options = {}) {
 
 const itemSchema = Joi.object({
     output: Joi.string().required(),
-    query: Joi.string().required(),
+    query: Joi.string(),
     serialize: Joi.func().required(),
 }).required();
 

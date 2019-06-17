@@ -18,7 +18,10 @@ export async function onPostBuild({ graphql }, options) {
     const feedPromises = Object.keys(options.feeds).map(async feed => {
         const { query, ...rest } = options.feeds[feed];
 
-        const data = await runQuery(graphql, query);
+        let data;
+        if(query) {
+            data = await runQuery(graphql, query)
+        }
 
         return {
             query: Object.assign({}, baseQuery, data),
