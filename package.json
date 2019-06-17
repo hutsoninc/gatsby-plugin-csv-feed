@@ -31,8 +31,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.5",
+    "@hapi/joi": "^15.0.3",
     "fs-extra": "^8.0.1",
-    "joi": "^14.3.1",
     "json2csv": "^4.5.1"
   },
   "devDependencies": {
