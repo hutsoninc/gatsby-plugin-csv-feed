@@ -1,13 +1,19 @@
 import fs from 'fs-extra'
 import path from 'path';
 import { Parser } from 'json2csv';
-import { runQuery, validateOptions } from './internals';
+import { defaultOptions, runQuery, validateOptions } from './internals';
 
 const publicPath = `./public`;
 
 export const onPreBootstrap = validateOptions;
 
-export async function onPostBuild({ graphql }, options) {
+export async function onPostBuild({ graphql }, pluginOptions) {
+    // Combine options
+    const options = {
+        ...defaultOptions,
+        ...pluginOptions,
+    }
+
     // Run base query
     let baseQuery;
     if (options.query) {
@@ -37,6 +43,7 @@ export async function onPostBuild({ graphql }, options) {
             serialize,
             query,
             output,
+            parserOptions = {},
         } = feed;
 
         const fields = [];
@@ -54,7 +61,11 @@ export async function onPostBuild({ graphql }, options) {
         });
 
         // Create csv
-        const parser = new Parser({ fields });
+        const parser = new Parser({
+            fields,
+            ...options.parserOptions,
+            ...parserOptions
+        });
 
         const csvData = parser.parse(feedData);
 

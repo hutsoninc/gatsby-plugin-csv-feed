@@ -1,5 +1,22 @@
 import Joi from '@hapi/joi';
 
+export const defaultOptions = {
+    parserOptions: {}
+}
+
+const itemSchema = Joi.object({
+    output: Joi.string().required(),
+    query: Joi.string(),
+    serialize: Joi.func().required(),
+    parserOptions: Joi.object(),
+}).required();
+
+const optionsSchema = Joi.object().keys({
+    feeds: Joi.array().items(itemSchema).required(),
+    query: Joi.string(),
+    parserOptions: Joi.object(),
+});
+
 export function validateOptions({ reporter }, options = {}) {
     delete options.plugins;
 
@@ -18,17 +35,6 @@ export function validateOptions({ reporter }, options = {}) {
         reporter.panic(`Error with gatsby-plugin-csv-feed plugin options:\n${errors.join('\n')}`);
     }
 }
-
-const itemSchema = Joi.object({
-    output: Joi.string().required(),
-    query: Joi.string(),
-    serialize: Joi.func().required(),
-}).required();
-
-const optionsSchema = Joi.object().keys({
-    feeds: Joi.array().items(itemSchema).required(),
-    query: Joi.string(),
-});
 
 export function runQuery(handler, query) {
     return handler(query).then(res => {

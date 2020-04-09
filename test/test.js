@@ -23,11 +23,6 @@ describe('gatsby-plugin-csv-feed', () => {
             };
         };
 
-        it('imports', () => {
-            expect(onPreBootstrap).toBeDefined();
-            expect(typeof onPreBootstrap).toEqual('function');
-        });
-
         it('removes plugins', async () => {
             const { options } = await setup({
                 plugins: [],
@@ -43,6 +38,32 @@ describe('gatsby-plugin-csv-feed', () => {
                     output: 'out.csv',
                     serialize: noop,
                     query: `query`
+                }],
+            });
+
+            expect(reporter.panic).toHaveBeenCalledTimes(1);
+        });
+        
+        it('reports invalid parserOptions option', async () => {
+            const { reporter } = await setup({
+                parserOptions: 123,
+                feeds: [{
+                    output: 'out.csv',
+                    serialize: noop,
+                    query: `query`
+                }],
+            });
+
+            expect(reporter.panic).toHaveBeenCalledTimes(1);
+        });
+        
+        it('reports invalid parserOptions feed option', async () => {
+            const { reporter } = await setup({
+                feeds: [{
+                    output: 'out.csv',
+                    serialize: noop,
+                    query: `query`,
+                    parserOptions: 123
                 }],
             });
 
@@ -102,10 +123,12 @@ describe('gatsby-plugin-csv-feed', () => {
         it('successfully validates query option', async () => {
             const { reporter } = await setup({
                 query: `query`,
+                parserOptions: {},
                 feeds: [{
                     output: 'out.csv',
                     serialize: noop,
-                    query: `query`
+                    query: `query`,
+                    parserOptions: {}
                 }],
             });
 
@@ -120,11 +143,6 @@ describe('gatsby-plugin-csv-feed', () => {
             fs.exists = jest.fn().mockResolvedValue(true);
             fs.writeFile = jest.fn().mockResolvedValue(true);
             fs.mkdirp = jest.fn().mockResolvedValue();
-        });
-
-        it('imports', () => {
-            expect(onPostBuild).toBeDefined();
-            expect(typeof onPostBuild).toEqual('function');
         });
 
         it(`creates CSV`, async () => {

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed.svg?branch=master)](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed) [![Current npm package version](https://img.shields.io/npm/v/gatsby-plugin-csv-feed.svg)](https://www.npmjs.com/package/gatsby-plugin-csv-feed) 
 
-Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Google Data Feeds, Page Feeds, and feeds for other integrations.
+Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Google Data Feeds, Facebook Catalog Feeds, Page Feeds, and feeds for other integrations. Uses [`json2csv`](https://github.com/zemirco/json2csv) to generate CSVs.
 
 ## Installing
 
@@ -29,6 +29,8 @@ module.exports = {
             }
           }
         `,
+        // Options to pass to `json2csv` parser for all feeds (optional)
+        parserOptions: {},
         // Feeds
         feeds: [
           {
@@ -70,6 +72,8 @@ module.exports = {
               });
             },
             output: "/product-feed.csv",
+            // Options to pass to `json2csv` parser for this feed (optional)
+            parserOptions: {},
           },
         ],
       },
@@ -77,6 +81,12 @@ module.exports = {
   ]
 }
 ```
+
+### Passing parser options to `json2csv`
+
+Additional options may be passed to `json2csv` via the `parserOptions` field. Pass `parserOptions` to all feeds by adding it to the plugin options object or to an individual feed by adding it to the feed object. Feed `parserOptions` take precedence over plugin `parserOptions`.
+
+To see a list of available options, [view the `JavaScript Module` section of the `json2csv` package](https://github.com/zemirco/json2csv#javascript-module).
 
 ## License
 
