@@ -1,12 +1,29 @@
 {
   "name": "gatsby-plugin-csv-feed",
   "version": "2.0.0",
-  "description": "Gatsby plugin for creating CSV data feeds",
+  "description": "Gatsby plugin for creating CSV feeds.",
   "main": "index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production && babel src --out-dir .",
-    "prepublishOnly": "npm run build",
-    "test": "jest"
+    "build": "babel src --out-dir . --ignore \"**/__tests__\"",
+    "prepare": "cross-env NODE_ENV=production npm run build",
+    "test": "jest",
+    "watch": "babel -w src --out-dir . --ignore \"**/__tests__\""
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "joi": "^17.4.2",
+    "fs-extra": "^10.0.0",
+    "json2csv": "^5.0.6"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "babel-preset-gatsby-package": "^0.12.0",
+    "cross-env": "^7.0.3",
+    "jest": "^24.9.0"
+  },
+  "peerDependencies": {
+    "gatsby": "^2.0.0"
   },
   "keywords": [
     "gatsby",
@@ -28,18 +45,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/hutsoninc/gatsby-plugin-csv-feed"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.9.2",
-    "@hapi/joi": "^17.1.1",
-    "fs-extra": "^9.0.0",
-    "json2csv": "^5.0.0"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "babel-preset-gatsby-package": "^0.3.1",
-    "cross-env": "^7.0.2",
-    "jest": "^25.3.0"
   }
 }

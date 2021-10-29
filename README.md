@@ -1,8 +1,8 @@
 # gatsby-plugin-csv-feed
 
-[![Build Status](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed.svg?branch=master)](https://travis-ci.com/hutsoninc/gatsby-plugin-csv-feed) [![Current npm package version](https://img.shields.io/npm/v/gatsby-plugin-csv-feed.svg)](https://www.npmjs.com/package/gatsby-plugin-csv-feed) 
+[![Current npm package version](https://img.shields.io/npm/v/gatsby-plugin-csv-feed.svg)](https://www.npmjs.com/package/gatsby-plugin-csv-feed) 
 
-Gatsby plugin for creating CSV data feeds. Can be used for creating dynamic Google Data Feeds, Facebook Catalog Feeds, Page Feeds, and feeds for other integrations. Uses [`json2csv`](https://github.com/zemirco/json2csv) to generate CSVs.
+Gatsby plugin for creating CSV feeds. Can be used for creating dynamic Google Data Feeds, Facebook Catalog Feeds, Page Feeds, and feeds for other integrations. Uses [`json2csv`](https://github.com/zemirco/json2csv) to generate CSVs.
 
 ## Installing
 
@@ -17,7 +17,7 @@ Here's an example of how to create a [Custom Google Data Feed](https://support.g
 module.exports = {
   plugins: [
     {
-      resolve: "gatsby-plugin-csv-feed",
+      resolve: 'gatsby-plugin-csv-feed',
       options: {
         // Query to pass to all feed serializers (optional)
         query: `
@@ -34,6 +34,7 @@ module.exports = {
         // Feeds
         feeds: [
           {
+            // Individual feed query
             query: `
               {
                 allMarkdownRemark {
@@ -60,18 +61,19 @@ module.exports = {
               return allMarkdownRemark.edges.map(edge => {
                 const node = Object.assign({}, edge.node.frontmatter, edge.node.fields);
                 return {
-                  "ID": node.id,
-                  "Item title": node.title,
-                  "Item description": node.description,
-                  "Image URL": `${site.siteMetadata.siteUrl}${node.image}`,
-                  "Price": `${Number(node.price).toLocaleString('en-us')} USD`,
-                  "Item Category": node.category,
-                  "Contextual keywords": node.keywords.join(';'),
-                  "Final URL": `${site.siteMetadata.siteUrl}${node.slug}`,
+                  'ID': node.id,
+                  'Item title': node.title,
+                  'Item description': node.description,
+                  'Image URL': `${site.siteMetadata.siteUrl}${node.image}`,
+                  'Price': `${Number(node.price).toLocaleString('en-US')} USD`,
+                  'Item Category': node.category,
+                  'Contextual keywords': node.keywords.join(';'),
+                  'Final URL': `${site.siteMetadata.siteUrl}${node.slug}`,
                 };
               });
             },
-            output: "/product-feed.csv",
+            // Output file
+            output: '/product-feed.csv',
             // Options to pass to `json2csv` parser for this feed (optional)
             parserOptions: {},
           },

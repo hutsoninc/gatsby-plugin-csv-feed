@@ -1,85 +1,73 @@
 import fs from 'fs-extra'
-import path from 'path';
-import { Parser } from 'json2csv';
-import { defaultOptions, runQuery, validateOptions } from './internals';
+import path from 'path'
+import { Parser } from 'json2csv'
+import { defaultOptions, runQuery, validateOptions } from './internals'
 
-const publicPath = `./public`;
+exports.onPreBootstrap = validateOptions
 
-export const onPreBootstrap = validateOptions;
+exports.onPostBuild = async ({ graphql }, pluginOptions) => {
+  const options = {
+    ...defaultOptions,
+    ...pluginOptions,
+  }
 
-export async function onPostBuild({ graphql }, pluginOptions) {
-    // Combine options
-    const options = {
-        ...defaultOptions,
-        ...pluginOptions,
+  // Run base query
+  const baseQuery = options.query ? await runQuery(graphql, options.query) : {}
+
+  // Run queries
+  const feedPromises = Object.keys(options.feeds).map(async feed => {
+    const { query, ...rest } = options.feeds[feed]
+
+    const data = query ? await runQuery(graphql, query) : {}
+
+    return {
+      query: { ...baseQuery, ...data },
+      ...rest,
     }
+  })
 
-    // Run base query
-    let baseQuery;
-    if (options.query) {
-        baseQuery = await runQuery(graphql, options.query);
-    }
+  const feeds = await Promise.all(feedPromises)
 
-    // Run queries
-    const feedPromises = Object.keys(options.feeds).map(async feed => {
-        const { query, ...rest } = options.feeds[feed];
+  // Serialize data
+  await Promise.all(
+    feeds.map(async feed => {
+      const {
+        serialize,
+        query,
+        output,
+        parserOptions = {},
+      } = feed
 
-        let data;
-        if(query) {
-            data = await runQuery(graphql, query)
-        }
+      const feedData = serialize({ query })
 
-        return {
-            query: Object.assign({}, baseQuery, data),
-            ...rest,
-        };
-    });
+      // Get headers
+      const fields = feedData.reduce((acc, item) => {
+        Object.keys(item).forEach(header => {
+          if (!(header in acc)) {
+            acc.push(header)
+          }
+        })
+        return acc
+      }, [])
 
-    const feeds = await Promise.all(feedPromises);
+      // Create csv
+      const parser = new Parser({
+        fields,
+        ...options.parserOptions,
+        ...parserOptions
+      })
 
-    // Serialize data
-    const filePromises = feeds.map(async feed => {
-        const {
-            serialize,
-            query,
-            output,
-            parserOptions = {},
-        } = feed;
+      const csvData = parser.parse(feedData)
 
-        const fields = [];
+      // Write to file
+      const outputPath = path.join('public', output)
+      const outputDir = path.dirname(outputPath)
 
-        const feedData = serialize({ query });
+      await fs.ensureDir(outputDir)
 
-        // Get headers
-        feedData.forEach(item => {
-            Object.keys(item).forEach(header => {
-                const headerMatch = fields.find(val => val === header);
-                if (!headerMatch) {
-                    fields.push(header);
-                }
-            });
-        });
+      return await fs.writeFile(outputPath, csvData)
+    })
+  )
 
-        // Create csv
-        const parser = new Parser({
-            fields,
-            ...options.parserOptions,
-            ...parserOptions
-        });
-
-        const csvData = parser.parse(feedData);
-
-        // Write to file
-        const outputPath = path.join(publicPath, output);
-        const outputDir = path.dirname(outputPath);
-
-        if (!(await fs.exists(outputDir))) {
-            await fs.mkdirp(outputDir);
-        }
-
-        return await fs.writeFile(outputPath, csvData);
-    });
-
-    // Write to files
-    await Promise.all(filePromises);
+  return null
 }
