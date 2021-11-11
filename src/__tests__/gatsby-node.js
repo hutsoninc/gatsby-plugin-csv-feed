@@ -353,5 +353,119 @@ describe('gatsby-plugin-csv-feed', () => {
       expect(contents).toMatch(/siteTitle/)
       expect(contents).toMatchSnapshot()
     })
+
+    it('creates CSV using example from README', async () => {
+      const siteData = {
+        data: {
+          site: {
+            siteMetadata: {
+              siteUrl: 'https://www.hutsoninc.com',
+            },
+          },
+        },
+      }
+
+      const allMarkdownRemarkData = {
+        data: {
+          allMarkdownRemark: {
+            edges: [
+              {
+                node: {
+                  frontmatter: {
+                    id: '1',
+                    title: 'Title 1',
+                    description: 'Description 1',
+                    category: 'Category 1',
+                    keywords: ['Keyword 1'],
+                    price: 1,
+                    image: '/image1.jpg'
+                  },
+                  fields: {
+                    slug: '/products/1'
+                  }
+                },
+              },
+              {
+                node: {
+                  frontmatter: {
+                    id: '2',
+                    title: 'Title 2',
+                    description: 'Description 2',
+                    category: 'Category 2',
+                    keywords: ['Keyword 2'],
+                    price: 2,
+                    image: '/image2.jpg'
+                  },
+                  fields: {
+                    slug: '/products/2'
+                  }
+                },
+              },
+            ],
+          },
+        },
+      }
+
+      const graphql = jest.fn()
+        .mockResolvedValueOnce(siteData)
+        .mockResolvedValueOnce(allMarkdownRemarkData)
+
+      await onPostBuild({ graphql }, {
+        query: `
+          {
+            site {
+              siteMetadata {
+                siteUrl
+              }
+            }
+          }
+        `,
+        feeds: [{
+          query: `
+            {
+              allMarkdownRemark {
+                edges {
+                  node {
+                    frontmatter {
+                      id
+                      title
+                      description
+                      category
+                      keywords
+                      price
+                      image
+                    }
+                    fields {
+                      slug
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          serialize: ({ query: { site, allMarkdownRemark } }) => {
+            return allMarkdownRemark.edges.map(edge => {
+              const node = Object.assign({}, edge.node.frontmatter, edge.node.fields);
+              return {
+                'ID': node.id,
+                'Item title': node.title,
+                'Item description': node.description,
+                'Image URL': `${site.siteMetadata.siteUrl}${node.image}`,
+                'Price': `${Number(node.price).toLocaleString('en-US')} USD`,
+                'Item Category': node.category,
+                'Contextual keywords': node.keywords.join(';'),
+                'Final URL': `${site.siteMetadata.siteUrl}${node.slug}`,
+              };
+            });
+          },
+          output: '/product-feed.csv',
+        }],
+      })
+
+      const [filePath, contents] = fs.writeFile.mock.calls[0]
+
+      expect(filePath).toEqual(path.join('public', '/product-feed.csv'))
+      expect(contents).toMatchSnapshot()
+    })
   })
 })

@@ -5,6 +5,12 @@ exports[`gatsby-plugin-csv-feed onPostBuild creates CSV 1`] = `
 \\"Some title\\",\\"Some description\\""
 `;
 
+exports[`gatsby-plugin-csv-feed onPostBuild creates CSV using example from README 1`] = `
+"\\"ID\\",\\"Item title\\",\\"Item description\\",\\"Image URL\\",\\"Price\\",\\"Item Category\\",\\"Contextual keywords\\",\\"Final URL\\"
+\\"1\\",\\"Title 1\\",\\"Description 1\\",\\"https://www.hutsoninc.com/image1.jpg\\",\\"1 USD\\",\\"Category 1\\",\\"Keyword 1\\",\\"https://www.hutsoninc.com/products/1\\"
+\\"2\\",\\"Title 2\\",\\"Description 2\\",\\"https://www.hutsoninc.com/image2.jpg\\",\\"2 USD\\",\\"Category 2\\",\\"Keyword 2\\",\\"https://www.hutsoninc.com/products/2\\""
+`;
+
 exports[`gatsby-plugin-csv-feed onPostBuild creates multiple CSVs 1`] = `
 "\\"title\\",\\"description\\"
 \\"Some title\\",\\"Some description\\""
