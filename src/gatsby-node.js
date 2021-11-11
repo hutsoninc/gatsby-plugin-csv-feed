@@ -43,7 +43,7 @@ exports.onPostBuild = async ({ graphql }, pluginOptions) => {
       // Get headers
       const fields = feedData.reduce((acc, item) => {
         Object.keys(item).forEach(header => {
-          if (!(header in acc)) {
+          if (!acc.includes(header)) {
             acc.push(header)
           }
         })
